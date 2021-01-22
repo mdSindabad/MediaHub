@@ -5,6 +5,7 @@ import {
     Grid,
     makeStyles,
     CircularProgress,
+    Typography,
 } from '@material-ui/core';
 import {Alert} from '@material-ui/lab';
 
@@ -14,8 +15,9 @@ const useStyles = makeStyles(theme => ({
         marginTop: '0.5rem',
         cursor: 'pointer'
     },
-    card: {
-        
+    title: {
+        marginTop: '0.5rem',
+        fontSize: '1.5rem',
     }
 }))
 
@@ -56,25 +58,28 @@ const TvShows = () => {
     }, []);
 
     return (
-        <Grid container  justify='center'spacing={1} className={classes.root}>
-            {
-                state.isLoading ?
-                <Grid item>
-                    <CircularProgress />
-                </Grid> :
-                state.error ? 
+        <>
+            <Typography variant='subtitle2'component='h3' className={classes.title}>Tv Shows</Typography>
+            <Grid container justify={state.isLoading ? 'center' : 'flex-start'} spacing={1} className={classes.root}>
+                {
+                    state.isLoading ?
                     <Grid item>
-                        <Alert severity="error">{state.error}</Alert>
+                        <CircularProgress />
                     </Grid> :
-                    state.data.map(item => {
-                        return (
-                            <Grid key={item.id} item xs={6} sm={3} md={2}>
-                                <CardItem item={item} />
-                            </Grid>
-                        )
-                    })
-            }
-        </Grid>
+                    state.error ? 
+                        <Grid item>
+                            <Alert severity="error">{state.error}</Alert>
+                        </Grid> :
+                        state.data.map(item => {
+                            return (
+                                <Grid key={item.id} item xs={6} sm={3} md={2}>
+                                    <CardItem item={item} />
+                                </Grid>
+                            )
+                        })
+                }
+            </Grid>
+        </>
     )
 }
 

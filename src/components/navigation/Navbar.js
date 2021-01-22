@@ -7,11 +7,12 @@ import {
     Typography,
     Button,
     Box,
-    IconButton
+    IconButton,
 } from '@material-ui/core';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
+import {makeStyles, useTheme, fade} from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import SearchBar from '../SearchBar';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,9 +25,12 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: 'auto',
     },
     logo: {
-        cursor: 'pointer'
-    }
-}))
+        cursor: 'pointer',
+        '&:hover': {
+            color: '#1de9b6',
+        }
+    },
+}));
 
 const Navbar = (props) => {
     const [open, setOpen] = useState(false);
@@ -40,19 +44,22 @@ const Navbar = (props) => {
         props.history.push(route)
     }
 
+    
+
     return (
         <AppBar position='sticky' className={classes.root}>
             <Toolbar>
-                <Typography className={classes.logo} onClick={() => handleClick('/')}>
+                <Typography variant='h5' component='h5' className={classes.logo} onClick={() => handleClick('/')}>
                     MediaHub
                 </Typography>
+                <SearchBar />
                 {
                     matches ? 
                     // large devices navbar
                     <Box className={classes.buttons}>
-                        <Button onClick={() => handleClick('/')} color='inherit'>Trending</Button>
-                        <Button onClick={() => handleClick('/movies')} color='inherit'>Movie</Button>
-                        <Button onClick={() => handleClick('/tv-shows')} color='inherit'>Tv Shows</Button>
+                        <Button variant={props.location.pathname === '/' ? 'outlined' : 'text'} onClick={() => handleClick('/')} color='inherit'>Home</Button>
+                        <Button variant={props.location.pathname === '/movies' ? 'outlined' : 'text'} onClick={() => handleClick('/movies')} color='inherit'>Movie</Button>
+                        <Button variant={props.location.pathname === '/tv-shows' ? 'outlined' : 'text'} onClick={() => handleClick('/tv-shows')} color='inherit'>Tv Shows</Button>
                     </Box> : 
                     // mobile navbar with drawer
                     <Box className={classes.buttons}>

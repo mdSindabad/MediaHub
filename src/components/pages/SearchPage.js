@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-const Movies = () => {
+const SearchPage = (props) => {
     const classes = useStyles();
     const initialState = {
         isLoading: true,
@@ -30,10 +30,19 @@ const Movies = () => {
     };
     const [state, setState] = useState(initialState);
 
+    const queryString = props.location.search.split('=')[1];
     useEffect(() => {
         const keys = process.env.REACT_APP_API_KEY;
+        setState(prevState => {
+            return {
+                ...prevState,
+                isLoading: true,
+                data: [],
+                error: ''
+            }  
+        });
         setTimeout(() => {
-            axios.get(`https://api.themoviedb.org/3/movie/now_playing?api_key=${keys}&language=en-US&page=1`)
+            axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${keys}&language=en-US&page=1&include_adult=false&query=${queryString}`)
             .then(response => {
                 setState(prevState => {
                     return {
@@ -55,11 +64,11 @@ const Movies = () => {
                 })
             });
         }, 500);
-    }, []);
+    }, [queryString]);
 
     return (
         <>
-            <Typography variant='subtitle2'component='h3' className={classes.title}>Movies</Typography>
+            <Typography variant='subtitle2'component='h3' className={classes.title}>Search results for: {queryString}</Typography>
             <Grid container justify={state.isLoading ? 'center' : 'flex-start'} spacing={1} className={classes.root}>
                 {
                     state.isLoading ?
@@ -72,9 +81,10 @@ const Movies = () => {
                         </Grid> :
                         state.data.map(item => {
                             return (
+                                item.poster_path ? 
                                 <Grid key={item.id} item xs={6} sm={3} md={2}>
                                     <CardItem item={item} />
-                                </Grid>
+                                </Grid> : null
                             )
                         })
                 }
@@ -83,5 +93,5 @@ const Movies = () => {
     )
 }
 
-export default Movies
+export default SearchPage
 

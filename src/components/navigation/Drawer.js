@@ -18,13 +18,16 @@ const useStyles = makeStyles({
     },
     button: {
         marginLeft: 'auto',
+    },
+    active: {
+        color: '#009688',
     }
 })
 
-const DrawerComponent = ({open, setOpen, history}) => {
+const DrawerComponent = ({open, setOpen, history, location}) => {
     const classes = useStyles();
 
-    const menuItems = [{name: 'Movies', route: '/movies'}, {name: 'Tv Shows', route: '/tv-shows'},{name:'Trending', route: '/'}]
+    const menuItems = [{name:'Trending', route: '/'}, {name: 'Movies', route: '/movies'}, {name: 'Tv Shows', route: '/tv-shows'}]
 
     const handleClick = (route) => {
         history.push(route);
@@ -43,7 +46,7 @@ const DrawerComponent = ({open, setOpen, history}) => {
             <Divider />
             <List>
                 {menuItems.map((item) => (
-                <ListItem button key={item.name} onClick={() => handleClick(item.route)}>
+                <ListItem className={location.pathname === item.route && classes.active} button key={item.name} onClick={() => handleClick(item.route)}>
                     <ListItemText primary={item.name} />
                 </ListItem>
                 ))}

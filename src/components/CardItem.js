@@ -10,8 +10,12 @@ import {
 const useStyles = makeStyles({
     root: {
       maxWidth: '200px',
-    //   background: 'primary',
+      background: '#f1f8e9',
       position: 'relative',
+      transition: 'all 0.3s ease',
+      '&:hover': {
+          transform: 'scale(1.02)'
+      },
     },
     media: {
       height: 250,
@@ -22,7 +26,24 @@ const useStyles = makeStyles({
         top: 0,
         background: '#ff4569',
         padding: '0.2rem',
-        borderRadius: '5%',
+        borderRadius: '10%',
+        color: '#fff',
+    },
+    rating: {
+        position: 'absolute',
+        background: '#14a37f',
+        right: '0.5rem',
+        bottom: '0.5rem',
+        width: '2rem',
+        height: '2rem',
+        paddingTop: '0.37rem',
+        textAlign: 'center',
+        borderRadius: '50%',
+        color: '#fff',
+    },
+    title: {
+        fontSize: '1.1rem',
+        fontWeight: '500',
     }
   });
 
@@ -39,7 +60,7 @@ const CardItem = ({item}) => {
                 title="Contemplative Reptile"
             />
             <CardContent>
-                <Typography gutterBottom noWrap variant="h6" component="h6">
+                <Typography gutterBottom noWrap className={classes.title}>
                     {item.title? item.title : item.name}
                 </Typography>
                 {
@@ -50,6 +71,9 @@ const CardItem = ({item}) => {
                 }
                 <Typography variant="body2" component="p">
                 {year}
+                </Typography>
+                <Typography className={classes.rating} variant="body2" component="p">
+                {item.vote_average}
                 </Typography>
             </CardContent>
         </Card>
