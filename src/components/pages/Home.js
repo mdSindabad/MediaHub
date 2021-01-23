@@ -29,11 +29,11 @@ const Home = () => {
         error: ''
     };
     const [state, setState] = useState(initialState);
-
+    
     useEffect(() => {
         const keys = process.env.REACT_APP_API_KEY;
         setTimeout(() => {
-            axios.get(`https://api.themoviedb.org/3/trending/all/day?api_key=${keys}&language=en-US`)
+            axios.get(`https://api.themoviedb.org/3/trending/all/week?api_key=${keys}&language=en-US&page=5`)
             .then(response => {
                 setState(prevState => {
                     return {

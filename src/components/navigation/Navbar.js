@@ -9,7 +9,7 @@ import {
     Box,
     IconButton,
 } from '@material-ui/core';
-import {makeStyles, useTheme, fade} from '@material-ui/core/styles';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import SearchBar from '../SearchBar';

@@ -8,6 +8,7 @@ import {
     Typography,
 } from '@material-ui/core';
 import {Alert} from '@material-ui/lab';
+import SelectOptions from '../SelectOptions';
 
 
 const useStyles = makeStyles(theme => ({
@@ -17,23 +18,51 @@ const useStyles = makeStyles(theme => ({
     },
     title: {
         marginTop: '0.5rem',
-        fontSize: '1.5rem',
+        fontSize: '1rem',
+        [theme.breakpoints.up('sm')]: {
+            fontSize: '1.5rem',
+        }
     }
 }))
 
 const Movies = () => {
     const classes = useStyles();
+
+    // select options
+    const selectItems = [
+        {name:'Popular', value:'popular'},
+        {name:'Now Playing', value:'now_playing'},
+        {name:'Top Rated', value:'top_rated'},
+        {name:'Upcoming', value:'upcoming'},
+    ];
+
+    // initial movie state
     const initialState = {
         isLoading: true,
         data: [],
         error: ''
     };
+
+    // local state
     const [state, setState] = useState(initialState);
+    const [category, setCategory] = useState('popular');
+
 
     useEffect(() => {
         const keys = process.env.REACT_APP_API_KEY;
+        // emptying current state
+        setState(prevState => {
+            return {
+                ...prevState,
+                isLoading: true,
+                data: [],
+                error: ''
+            }  
+        })
+
+        // sending api request after 0.5second
         setTimeout(() => {
-            axios.get(`https://api.themoviedb.org/3/movie/now_playing?api_key=${keys}&language=en-US&page=1`)
+            axios.get(`https://api.themoviedb.org/3/movie/${category}?api_key=${keys}&language=en-US&page=1`)
             .then(response => {
                 setState(prevState => {
                     return {
@@ -55,12 +84,19 @@ const Movies = () => {
                 })
             });
         }, 500);
-    }, []);
+    }, [category]);
 
     return (
         <>
-            <Typography variant='subtitle2'component='h3' className={classes.title}>Movies</Typography>
-            <Grid container justify={state.isLoading ? 'center' : 'flex-start'} spacing={1} className={classes.root}>
+            <Grid container justify='space-between'>
+                <Grid item>
+                    <Typography variant='subtitle2'component='h3' className={classes.title}>Tv Shows/ {selectItems.map(item => item.value === category && item.name)}</Typography>
+                </Grid>
+                <Grid item>
+                    <SelectOptions selectItems={selectItems} category={category} setCategory={setCategory} />
+                </Grid>
+            </Grid>
+           <Grid container justify={state.isLoading ? 'center' : 'flex-start'} spacing={1} className={classes.root}>
                 {
                     state.isLoading ?
                     <Grid item>
