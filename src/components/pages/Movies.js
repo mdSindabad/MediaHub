@@ -63,7 +63,7 @@ const Movies = () => {
 
     // category change function
     const categoryChange = (category) => {
-        // setPage(1);
+        setPage(1);
         setCategory(category);
     };
 
@@ -112,13 +112,17 @@ const Movies = () => {
                     <SelectOptions selectItems={selectItems} category={category} handleChange={categoryChange} />
                 </Grid>
                 <Grid item xs={1}>
-                    <Typography variant='body2' component='h6' className={classes.pageNum}>Page: {page}</Typography>
+                    {
+                        !state.isLoading && state.error === '' ? (
+                            <Typography variant='body2' component='h6' className={classes.pageNum}>Page: {page}</Typography>
+                        ) : null
+                    }
                 </Grid>
                 <Grid item xs={12}>
                     <Typography variant='subtitle2'component='h3' className={classes.title}>Tv Shows/ {selectItems.map(item => item.value === category && item.name)}</Typography>
                 </Grid>
             </Grid>
-           <Grid container justify={state.isLoading ? 'center' : 'flex-start'} spacing={1} className={classes.root}>
+           <Grid container justify={state.isLoading || state.error !== '' ? 'center' : 'flex-start'} spacing={1} className={classes.root}>
                 {
                     state.isLoading ?
                     <Grid item>
@@ -139,7 +143,11 @@ const Movies = () => {
             </Grid>
             <Grid container justify='center' className={classes.page}>
                 <Grid item>
-                    <PaginationComponent page={page} handleChange={pageChange} />
+                    {
+                        !state.isLoading && state.error === '' ? (
+                            <PaginationComponent page={page} handleChange={pageChange} />
+                        ) : null
+                    }
                 </Grid>
             </Grid>
         </>

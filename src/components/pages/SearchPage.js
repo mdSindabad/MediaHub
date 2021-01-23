@@ -8,8 +8,9 @@ import {
     Typography,
 } from '@material-ui/core';
 import {Alert} from '@material-ui/lab';
+import PaginationComponent from '../Pagination';
 
-
+// material-ui styles
 const useStyles = makeStyles(theme => ({
     root: {
         marginTop: '0.5rem',
@@ -18,21 +19,42 @@ const useStyles = makeStyles(theme => ({
     title: {
         marginTop: '0.5rem',
         fontSize: '1.5rem',
+    },
+    page: {
+        marginBottom: '1.5rem',
+    },
+    pageNum: {
+        marginTop: '0.5rem',
     }
 }))
 
 const SearchPage = (props) => {
     const classes = useStyles();
+
+    // initial state
     const initialState = {
         isLoading: true,
         data: [],
         error: ''
     };
-    const [state, setState] = useState(initialState);
 
+    // local state
+    const [state, setState] = useState(initialState);
+    const [page, setPage] = useState(1);
+
+    // pagination function
+    const pageChange = (event, page) => {
+        setPage(page)
+    };
+
+    // extracting search parameters
     const queryString = props.location.search.split('=')[1];
+
+    // send api request
     useEffect(() => {
         const keys = process.env.REACT_APP_API_KEY;
+
+        // clearing current state
         setState(prevState => {
             return {
                 ...prevState,
@@ -41,8 +63,10 @@ const SearchPage = (props) => {
                 error: ''
             }  
         });
+
+        // senging api request after 0.5sec
         setTimeout(() => {
-            axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${keys}&language=en-US&page=1&include_adult=false&query=${queryString}`)
+            axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${keys}&language=en-US&page=${page}&include_adult=false&query=${queryString}`)
             .then(response => {
                 setState(prevState => {
                     return {
@@ -64,12 +88,23 @@ const SearchPage = (props) => {
                 })
             });
         }, 500);
-    }, [queryString]);
+    }, [queryString, page]);
 
     return (
         <>
-            <Typography variant='subtitle2'component='h3' className={classes.title}>Search results for: {queryString}</Typography>
-            <Grid container justify={state.isLoading ? 'center' : 'flex-start'} spacing={1} className={classes.root}>
+            <Grid container justify='space-between'>
+                <Grid item>
+                <Typography variant='subtitle2'component='h3' className={classes.title}>Search results for: {queryString}</Typography>  
+                </Grid>
+                <Grid item>
+                    {
+                        (!state.isLoading && state.error === '') || state.data ? (
+                            <Typography variant='body2' component='h6' className={classes.pageNum}>Page: {page}</Typography>
+                        ) : null
+                    }
+                </Grid>
+            </Grid>
+            <Grid container justify={state.isLoading || state.error !== '' ? 'center' : 'flex-start'} spacing={1} className={classes.root}>
                 {
                     state.isLoading ?
                     <Grid item>
@@ -88,6 +123,15 @@ const SearchPage = (props) => {
                             )
                         })
                 }
+            </Grid>
+            <Grid container justify='center' className={classes.page}>
+                <Grid item>
+                    {
+                        !state.isLoading && state.error === '' ? (
+                            <PaginationComponent page={page} handleChange={pageChange} />
+                        ) : null
+                    }
+                </Grid>
             </Grid>
         </>
     )

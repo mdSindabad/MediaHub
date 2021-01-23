@@ -7,9 +7,7 @@ function App() {
     <div>
       <CssBaseline />
       <Navbar />
-      <Container>
-        <MainBody />
-      </Container>
+      <MainBody />
     </div>
   );
 }

@@ -15,7 +15,7 @@ const PaginationComponent = ({page, handleChange}) => {
 
   return (
     <div className={classes.root}>
-      <Pagination defaultPage={1} color='primary' onChange={handleChange} count={10} shape="rounded" />
+      <Pagination page={page} color='primary' onChange={handleChange} count={10} shape="rounded" />
     </div>
   );
 }

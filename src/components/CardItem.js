@@ -1,4 +1,5 @@
 import React from 'react';
+import {withRouter} from 'react-router-dom';
 import {
     Card,
     CardContent,
@@ -7,6 +8,7 @@ import {
     makeStyles
 } from '@material-ui/core';
 
+// material-ui styles
 const useStyles = makeStyles({
     root: {
       maxWidth: '200px',
@@ -48,12 +50,18 @@ const useStyles = makeStyles({
   });
 
 
-const CardItem = ({item}) => {
+const CardItem = ({item, history}) => {
     const classes = useStyles();
-    const releaseDate = item.release_date? item.release_date : item.first_air_date;
+    const releaseDate = item.release_date ? item.release_date : item.first_air_date;
     const year = releaseDate ? releaseDate.split('-')[0] : '????';
+    const movieOrTv = item.release_date ? 'movie' : 'tv';
+
+    const handleClick = () => {
+        history.push(`/details:${item.id}/media_type?=${movieOrTv}`)
+    };
+
     return (
-        <Card className={classes.root}>
+        <Card className={classes.root} onClick={handleClick}>
             <CardMedia
                 className={classes.media}
                 image={`${process.env.REACT_APP_IMG_URL}${item.poster_path}`}
@@ -80,4 +88,4 @@ const CardItem = ({item}) => {
     )
 }
 
-export default CardItem
+export default withRouter(CardItem);
