@@ -8,8 +8,9 @@ import {
     Typography,
 } from '@material-ui/core';
 import {Alert} from '@material-ui/lab';
+import PaginationComponent from '../Pagination';
 
-
+// material-ui styles
 const useStyles = makeStyles(theme => ({
     root: {
         marginTop: '0.5rem',
@@ -18,22 +19,51 @@ const useStyles = makeStyles(theme => ({
     title: {
         marginTop: '0.5rem',
         fontSize: '1.5rem',
+    },
+    page: {
+        marginBottom: '1.5rem',
+    },
+    pageNum: {
+        marginTop: '0.5rem',
     }
 }))
 
 const Home = () => {
     const classes = useStyles();
+
+    // initial state
     const initialState = {
         isLoading: true,
         data: [],
         error: ''
     };
+
+    // local state
     const [state, setState] = useState(initialState);
+    const [page, setPage] = useState(1);
     
+    // pagination function
+    const handleChange = (event, page) => {
+        setPage(page)
+    };
+
+    // fetching api with useEffect
     useEffect(() => {
         const keys = process.env.REACT_APP_API_KEY;
+
+        // clearing current state
+        setState(prevState => {
+            return {
+                ...prevState,
+                isLoading: true,
+                data: [],
+                error: ''
+            }  
+        })
+
+        // api call after 0.5sec
         setTimeout(() => {
-            axios.get(`https://api.themoviedb.org/3/trending/all/week?api_key=${keys}&language=en-US&page=5`)
+            axios.get(`https://api.themoviedb.org/3/trending/all/week?api_key=${keys}&language=en-US&page=${page}`)
             .then(response => {
                 setState(prevState => {
                     return {
@@ -55,12 +85,19 @@ const Home = () => {
                 })
             });
         }, 500);
-    }, []);
+    }, [page]);
 
 
     return (
         <>
-            <Typography variant='subtitle2'component='h3' className={classes.title}>Trending</Typography>
+            <Grid container justify='space-between'>
+                <Grid item>
+                    <Typography variant='subtitle2'component='h3' className={classes.title}>Trending</Typography>  
+                </Grid>
+                <Grid item>
+                <Typography variant='body2' component='h6' className={classes.pageNum}>Page: {page}</Typography>
+                </Grid>
+            </Grid>
             <Grid container justify={state.isLoading ? 'center' : 'flex-start'} spacing={1} className={classes.root}>
                 {
                     state.isLoading ?
@@ -79,6 +116,11 @@ const Home = () => {
                         )
                     })
                 }
+            </Grid>
+            <Grid container justify='center' className={classes.page}>
+                <Grid item>
+                    <PaginationComponent page={page} handleChange={handleChange} />
+                </Grid>
             </Grid>
         </>
     )

@@ -10,18 +10,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Pagination = () => {
+const PaginationComponent = ({page, handleChange}) => {
   const classes = useStyles();
-
-  const handleChange = (e) => {
-      console.log(e.target.value)
-  }
 
   return (
     <div className={classes.root}>
-      <Pagination onChange={handleChange} count={10} variant="outlined" shape="rounded" />
+      <Pagination defaultPage={1} color='primary' onChange={handleChange} count={10} shape="rounded" />
     </div>
   );
 }
 
-export default Pagination;
+export default PaginationComponent;

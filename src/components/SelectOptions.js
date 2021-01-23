@@ -10,7 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 // material-ui styles
 const useStyles = makeStyles(theme => ({
     formControl: {
-        margin: theme.spacing(1),
+        marginTop: theme.spacing(2),
         minWidth: 120,
       },
     label: {
@@ -25,13 +25,8 @@ const useStyles = makeStyles(theme => ({
 
 
 
-const SelectOptions = ({category, setCategory, selectItems}) => {
+const SelectOptions = ({category, handleChange, selectItems}) => {
     const classes = useStyles();
-    
-    // options-select handler function
-    const handleChange = (event) => {
-        setCategory(event.target.value);
-    };
 
     return (
         <FormControl variant="outlined" className={classes.formControl}>
@@ -41,7 +36,7 @@ const SelectOptions = ({category, setCategory, selectItems}) => {
             labelId="demo-simple-select-outlined-label"
             id="demo-simple-select-outlined"
             value={category}
-            onChange={handleChange}
+            onChange={(e) => handleChange(e.target.value)}
             label='Category'
             >
             {

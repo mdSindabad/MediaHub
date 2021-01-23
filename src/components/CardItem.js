@@ -51,7 +51,7 @@ const useStyles = makeStyles({
 const CardItem = ({item}) => {
     const classes = useStyles();
     const releaseDate = item.release_date? item.release_date : item.first_air_date;
-    const year = releaseDate.split('-')[0];
+    const year = releaseDate ? releaseDate.split('-')[0] : '????';
     return (
         <Card className={classes.root}>
             <CardMedia
