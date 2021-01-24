@@ -1,14 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios';
+import YoutubeModal from '../YoutubeModal';
 import {
     Grid,
     makeStyles,
     Typography,
     Button,
     CircularProgress,
+    useMediaQuery
 } from '@material-ui/core';
 import {Alert} from '@material-ui/lab';
 import LiveTvIcon from '@material-ui/icons/LiveTv';
+import Youtube from 'react-youtube';
+import { useTheme } from '@material-ui/core/styles';
 
 // material-ui styles
 const useStyles = makeStyles(theme => ({
@@ -56,7 +60,10 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const MovieDetails = (props) => {
-    
+    // media query
+    const theme = useTheme();
+    const matches = useMediaQuery(theme.breakpoints.up('sm'));
+
     // extracting url
     const id = props.match.url.split(':')[1];
     const media_type = props.location.search.split('=')[1];
@@ -70,6 +77,28 @@ const MovieDetails = (props) => {
     
     // local state
     const [state, setState] = useState(initialState);
+    const [open, setOpen] = useState(false);
+    const [videoId, setVideoId] = useState('')
+
+    // modal functions
+    const handleOpen = () => {
+        axios.get(`
+        https://api.themoviedb.org/3/${media_type}/${id}/videos?api_key=${process.env.REACT_APP_API_KEY}&language=en-US`)
+        .then(response => {
+            const obj = response.data.results.filter(item => {
+                const name = item.name;
+                return name.includes('Trailer') && item.site === 'YouTube';
+            })[0];
+            setVideoId(obj.key);
+            setOpen(true)
+        })
+        .catch(error => {
+            setOpen(false)
+        });
+    };
+    const handleClose = () => {
+        setOpen(false)
+    };
     
     // variable
     const bg = {url: `${process.env.REACT_APP_IMG_URL}${state.data.backdrop_path}`};
@@ -85,7 +114,6 @@ const MovieDetails = (props) => {
         setTimeout(() => {
             axios.get(`https://api.themoviedb.org/3/${media_type}/${id}?api_key=${keys}&language=en-US`)
             .then(response => {
-                console.log(response.data)
                 setState(prevState => {
                     return {
                         ...prevState,
@@ -108,6 +136,22 @@ const MovieDetails = (props) => {
         }, 500);
     }, []);
 
+    // youtube options
+    const optsXS = {
+        height: '200px',
+        width: '360px',
+        playerVars: {
+            autoplay: 1,
+        }
+    };
+    const optsSM = {
+        height: '390',
+        width: '640',
+        playerVars: {
+            autoplay: 1,
+        },
+    }
+
     return (
         <>
             <Grid container justify={state.isLoading || state.error !== '' ? 'center' : 'flex-start'} spacing={1}>
@@ -122,9 +166,16 @@ const MovieDetails = (props) => {
                     </Grid> :
                     <div div className={classes.root}>
                         <Grid container className={classes.details} justify='center'>
+
+                        {/* trailer popup modal */}
+                        <YoutubeModal open={open} handleClose={handleClose}>
+                            <Youtube videoId={videoId} opts={matches ? optsSM : optsXS} />
+                        </YoutubeModal>
+
                             <Grid item xs={12} sm={4}>
                                 <img className={classes.poster_img} src={`${process.env.REACT_APP_IMG_URL}${state.data.poster_path}`} alt='poster-image' />
                             </Grid>
+
                             <Grid item xs={12} sm={8}>
                                 <Typography gutterBottom variant='h3' content='h3'>{state.data.title || state.data.name}</Typography>
                                 <Typography gutterBottom variant='body1' content='p'>{state.data.overview}</Typography>
@@ -137,8 +188,10 @@ const MovieDetails = (props) => {
                                 color="primary"
                                 className={classes.button}
                                 startIcon={<LiveTvIcon />}
+                                onClick={handleOpen}
                                 >Watch Trailer</Button>
                             </Grid>
+
                         </Grid>
                     </div>
                 }
