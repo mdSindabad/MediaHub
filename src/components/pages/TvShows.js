@@ -80,30 +80,28 @@ const TvShows = () => {
                 }  
             });
 
-        // sending api request after 0.5 second
-        setTimeout(() => {
-            axios.get(`https://api.themoviedb.org/3/tv/${category}?api_key=${keys}&language=en-US&page=${page}`)
-            .then(response => {
-                setState(prevState => {
-                    return {
-                        ...prevState,
-                        isLoading: false,
-                        data: response.data.results,
-                        error: ''
-                    }  
-                })
+        // sending api request
+        axios.get(`https://api.themoviedb.org/3/tv/${category}?api_key=${keys}&language=en-US&page=${page}`)
+        .then(response => {
+            setState(prevState => {
+                return {
+                    ...prevState,
+                    isLoading: false,
+                    data: response.data.results,
+                    error: ''
+                }  
             })
-            .catch(error => {
-                setState(prevState => {
-                    return {
-                        ...prevState,
-                        isLoading: false,
-                        data: [],
-                        error: error.message
-                    }  
-                })
-            });
-        }, 500)
+        })
+        .catch(error => {
+            setState(prevState => {
+                return {
+                    ...prevState,
+                    isLoading: false,
+                    data: [],
+                    error: error.message
+                }  
+            })
+        });
     }, [category, page]);
 
     return (

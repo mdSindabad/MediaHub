@@ -63,30 +63,28 @@ const Home = () => {
             }  
         });
 
-        // api call after 0.5sec
-        setTimeout(() => {
-            axios.get(`https://api.themoviedb.org/3/trending/all/week?api_key=${keys}&language=en-US&page=${page}`)
-            .then(response => {
-                setState(prevState => {
-                    return {
-                        ...prevState,
-                        isLoading: false,
-                        data: response.data.results,
-                        error: ''
-                    }  
-                })
+        // senging api request
+        axios.get(`https://api.themoviedb.org/3/trending/all/week?api_key=${keys}&language=en-US&page=${page}`)
+        .then(response => {
+            setState(prevState => {
+                return {
+                    ...prevState,
+                    isLoading: false,
+                    data: response.data.results,
+                    error: ''
+                }  
             })
-            .catch(error => {
-                setState(prevState => {
-                    return {
-                        ...prevState,
-                        isLoading: false,
-                        data: [],
-                        error: error.message
-                    }  
-                })
-            });
-        }, 500);
+        })
+        .catch(error => {
+            setState(prevState => {
+                return {
+                    ...prevState,
+                    isLoading: false,
+                    data: [],
+                    error: error.message
+                }  
+            })
+        });
     }, [page]);
 
 

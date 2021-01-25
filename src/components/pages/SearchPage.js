@@ -31,6 +31,12 @@ const useStyles = makeStyles(theme => ({
 const SearchPage = (props) => {
     const classes = useStyles();
 
+    // extracting search parameters
+    const queryString = props.location.search.split('=')[1];
+
+    // env variables
+    const keys = process.env.REACT_APP_API_KEY;
+
     // initial state
     const initialState = {
         isLoading: true,
@@ -44,51 +50,78 @@ const SearchPage = (props) => {
 
     // pagination function
     const pageChange = (event, page) => {
-        setPage(page)
-    };
+        setPage(page);
 
-    // extracting search parameters
-    const queryString = props.location.search.split('=')[1];
-
-    // send api request
-    useEffect(() => {
-        const keys = process.env.REACT_APP_API_KEY;
-
-        // clearing current state
+        // reseting state to empty
         setState(prevState => {
             return {
                 ...prevState,
-                isLoading: true,
+                isLoading: false,
                 data: [],
                 error: ''
             }  
         });
 
-        // senging api request after 0.5sec
-        setTimeout(() => {
-            axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${keys}&language=en-US&page=${page}&include_adult=false&query=${queryString}`)
-            .then(response => {
-                setState(prevState => {
-                    return {
-                        ...prevState,
-                        isLoading: false,
-                        data: response.data.results,
-                        error: ''
-                    }  
-                })
+        // send api request
+        axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${keys}&language=en-US&page=${page}&include_adult=false&query=${queryString}`)
+        .then(response => {
+            console.log(response.data.page)
+            setState(prevState => {
+                return {
+                    ...prevState,
+                    isLoading: false,
+                    data: response.data.results,
+                    error: ''
+                }  
             })
-            .catch(error => {
-                setState(prevState => {
-                    return {
-                        ...prevState,
-                        isLoading: false,
-                        data: [],
-                        error: error.message
-                    }  
-                })
-            });
-        }, 500);
-    }, [queryString, page]);
+        })
+        .catch(error => {
+            setState(prevState => {
+                return {
+                    ...prevState,
+                    isLoading: false,
+                    data: [],
+                    error: error.message
+                }  
+            })
+        });
+    };
+
+    // send api request
+    useEffect(() => {
+
+        // clearing current state
+        setState(prevState => {
+            return {
+                ...prevState,
+                isLoading: true
+            }  
+        });
+        // reseting page number
+        setPage(1);
+        // senging api request
+        axios.get(`https://api.themoviedb.org/3/search/multi?api_key=${keys}&language=en-US&page=1&include_adult=false&query=${queryString}`)
+        .then(response => {
+            setState(prevState => {
+                return {
+                    ...prevState,
+                    isLoading: false,
+                    data: response.data.results,
+                    error: ''
+                }  
+            })
+        })
+        .catch(error => {
+            setState(prevState => {
+                return {
+                    ...prevState,
+                    isLoading: false,
+                    data: [],
+                    error: error.message
+                }  
+            })
+        });
+    }, [queryString]);
 
     return (
         <>
@@ -99,7 +132,7 @@ const SearchPage = (props) => {
                 <Grid item>
                     {
                         (!state.isLoading && state.error === '') || state.data ? (
-                            <Typography variant='body2' component='h6' className={classes.pageNum}>Page: {page}</Typography>
+                            <Typography variant='body2' component='h6' className={classes.pageNum }>Page: {page}</Typography>
                         ) : null
                     }
                 </Grid>

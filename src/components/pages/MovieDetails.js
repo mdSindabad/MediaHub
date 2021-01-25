@@ -110,30 +110,28 @@ const MovieDetails = (props) => {
     useEffect(() => {
         const keys = process.env.REACT_APP_API_KEY;
 
-        // senging api request after 0.5sec
-        setTimeout(() => {
-            axios.get(`https://api.themoviedb.org/3/${media_type}/${id}?api_key=${keys}&language=en-US`)
-            .then(response => {
-                setState(prevState => {
-                    return {
-                        ...prevState,
-                        isLoading: false,
-                        data: response.data,
-                        error: ''
-                    }  
-                })
+        // senging api request
+        axios.get(`https://api.themoviedb.org/3/${media_type}/${id}?api_key=${keys}&language=en-US`)
+        .then(response => {
+            setState(prevState => {
+                return {
+                    ...prevState,
+                    isLoading: false,
+                    data: response.data,
+                    error: ''
+                }  
             })
-            .catch(error => {
-                setState(prevState => {
-                    return {
-                        ...prevState,
-                        isLoading: false,
-                        data: [],
-                        error: error.message
-                    }  
-                })
-            });
-        }, 500);
+        })
+        .catch(error => {
+            setState(prevState => {
+                return {
+                    ...prevState,
+                    isLoading: false,
+                    data: [],
+                    error: error.message
+                }  
+            })
+        });
     }, []);
 
     // youtube options

@@ -58,7 +58,7 @@ const Movies = () => {
 
     // pagination function
     const pageChange = (event, page) => {
-        setPage(page)
+        setPage(page);
     };
 
     // category change function
@@ -79,30 +79,28 @@ const Movies = () => {
             }  
         });
 
-        // sending api request after 0.5second
-        setTimeout(() => {
-            axios.get(`https://api.themoviedb.org/3/movie/${category}?api_key=${keys}&language=en-US&page=${page}`)
-            .then(response => {
-                setState(prevState => {
-                    return {
-                        ...prevState,
-                        isLoading: false,
-                        data: response.data.results,
-                        error: ''
-                    }  
-                })
+        // sending api request
+        axios.get(`https://api.themoviedb.org/3/movie/${category}?api_key=${keys}&language=en-US&page=${page}`)
+        .then(response => {
+            setState(prevState => {
+                return {
+                    ...prevState,
+                    isLoading: false,
+                    data: response.data.results,
+                    error: ''
+                }  
             })
-            .catch(error => {
-                setState(prevState => {
-                    return {
-                        ...prevState,
-                        isLoading: false,
-                        data: [],
-                        error: error.message
-                    }  
-                })
-            });
-        }, 500);
+        })
+        .catch(error => {
+            setState(prevState => {
+                return {
+                    ...prevState,
+                    isLoading: false,
+                    data: [],
+                    error: error.message
+                }  
+            })
+        });
     }, [category, page]);
 
     return (
@@ -119,7 +117,7 @@ const Movies = () => {
                     }
                 </Grid>
                 <Grid item xs={12}>
-                    <Typography variant='subtitle2'component='h3' className={classes.title}>Tv Shows/ {selectItems.map(item => item.value === category && item.name)}</Typography>
+                    <Typography variant='subtitle2'component='h3' className={classes.title}>Movies/ {selectItems.map(item => item.value === category && item.name)}</Typography>
                 </Grid>
             </Grid>
            <Grid container justify={state.isLoading || state.error !== '' ? 'center' : 'flex-start'} spacing={1} className={classes.root}>
