@@ -13,6 +13,8 @@ import {makeStyles, useTheme} from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import SearchBar from '../SearchBar';
+import { useDispatch } from 'react-redux';
+import { fetch_home_data } from '../store/actions';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,13 +37,17 @@ const useStyles = makeStyles((theme) => ({
 const Navbar = (props) => {
     const [open, setOpen] = useState(false);
 
+    // redux
+    const dispatch = useDispatch();
+
+    // material-ui
     const theme = useTheme();
     const classes = useStyles();
-    
     const matches = useMediaQuery(theme.breakpoints.up('sm'));
 
     const handleClick = (route) => {
-        props.history.push(route)
+        props.history.push(route);
+        dispatch(fetch_home_data(1));
     }
 
     
