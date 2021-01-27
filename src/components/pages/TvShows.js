@@ -1,5 +1,4 @@
-import React, {useState, useEffect} from 'react';
-import axios from 'axios';
+import React, {useEffect} from 'react';
 import CardItem from '../CardItem';
 import {
     Grid,
@@ -10,6 +9,8 @@ import {
 import {Alert} from '@material-ui/lab';
 import SelectOptions from '../SelectOptions';
 import PaginationComponent from '../Pagination';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetch_tv_data } from '../store/actions';
 
 // material-ui styles
 const useStyles = makeStyles(theme => ({
@@ -45,64 +46,28 @@ const TvShows = () => {
         {name:'On The Air', value:'on_the_air'},
     ];
 
-    // initial tv-shows state
-    const initialState = {
-        isLoading: true,
-        data: [],
-        error: ''
-    };
-
-    // local state
-    const [state, setState] = useState(initialState);
-    const [category, setCategory] = useState('popular');
-    const [page, setPage] = useState(1);
-
+     // redux state
+     const dispatch = useDispatch();
+     const {isLoading, data, error} = useSelector(states => states.tv);
+ 
+     // local state
+     const category = data.category || 'popular';
+ 
      // pagination function
      const pageChange = (event, page) => {
-        setPage(page)
-    };
-
-    // category change function
-    const categoryChange = (category) => {
-        setPage(1);
-        setCategory(category);
-    };
-
-    useEffect(() => {
-        const keys = process.env.REACT_APP_API_KEY;
-         // clearing current state
-            setState(prevState => {
-                return {
-                    ...prevState,
-                    isLoading: true,
-                    data: [],
-                    error: ''
-                }  
-            });
-
-        // sending api request
-        axios.get(`https://api.themoviedb.org/3/tv/${category}?api_key=${keys}&language=en-US&page=${page}`)
-        .then(response => {
-            setState(prevState => {
-                return {
-                    ...prevState,
-                    isLoading: false,
-                    data: response.data.results,
-                    error: ''
-                }  
-            })
-        })
-        .catch(error => {
-            setState(prevState => {
-                return {
-                    ...prevState,
-                    isLoading: false,
-                    data: [],
-                    error: error.message
-                }  
-            })
-        });
-    }, [category, page]);
+         dispatch(fetch_tv_data(page, category));
+     };
+ 
+     // category change function
+     const categoryChange = (category) => {
+         dispatch(fetch_tv_data(1, category));
+     };
+ 
+     useEffect(() => {
+         if(isLoading) {
+             dispatch(fetch_tv_data(1, category));
+         }
+     }, []);
 
     return (
         <>
@@ -112,8 +77,8 @@ const TvShows = () => {
                 </Grid>
                 <Grid item xs={1}>
                     {
-                        !state.isLoading && state.error === '' ? (
-                            <Typography variant='body2' component='h6' className={classes.pageNum}>Page: {page}</Typography>
+                        !isLoading && error === '' ? (
+                            <Typography variant='body2' component='h6' className={classes.pageNum}>Page: {data.page}</Typography>
                         ) : null
                     }
                 </Grid>
@@ -121,17 +86,17 @@ const TvShows = () => {
                     <Typography variant='subtitle2'component='h3' className={classes.title}>Tv Shows/ {selectItems.map(item => item.value === category && item.name)}</Typography>
                 </Grid>
             </Grid>
-            <Grid container justify={state.isLoading || state.error !== '' ? 'center' : 'flex-start'} spacing={1} className={classes.root}>
+            <Grid container justify={isLoading || error !== '' ? 'center' : 'flex-start'} spacing={1} className={classes.root}>
                 {
-                    state.isLoading ?
+                    isLoading ?
                     <Grid item>
                         <CircularProgress />
                     </Grid> :
-                    state.error ? 
+                    error ? 
                         <Grid item>
-                            <Alert severity="error">{state.error}</Alert>
+                            <Alert severity="error">{error}</Alert>
                         </Grid> :
-                        state.data.map(item => {
+                        data.items.map(item => {
                             return (
                                 <Grid key={item.id} item xs={6} sm={3} md={2}>
                                     <CardItem item={item} />
@@ -143,8 +108,8 @@ const TvShows = () => {
             <Grid container justify='center' className={classes.page}>
                 <Grid item>
                     {
-                        !state.isLoading && state.error === '' ? (
-                            <PaginationComponent page={page} handleChange={pageChange} />
+                        !isLoading && error === '' ? (
+                            <PaginationComponent page={data.page} handleChange={pageChange} />
                         ) : null
                     }
                 </Grid>

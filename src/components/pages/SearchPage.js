@@ -46,10 +46,10 @@ const SearchPage = (props) => {
 
     // fetching api with useEffect
     useEffect(() => {
-        if(isLoading) {
+        if(isLoading || data.query !== queryString) {
             dispatch(fetch_search_data(1, queryString));
         }
-    }, []);
+    }, [queryString]);
 
     return (
         <>

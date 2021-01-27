@@ -29,7 +29,8 @@ export const fetch_search_data = (page, queryString) => {
                 const items = response.data.results;
                 const data = {
                     items,
-                    page
+                    page,
+                    query: queryString
                 };
                 dispatch(search_request_success(data));
             })
