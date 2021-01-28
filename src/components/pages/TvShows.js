@@ -72,10 +72,10 @@ const TvShows = () => {
     return (
         <>
             <Grid container justify='space-between'>
-                <Grid item xs={11}>
+                <Grid item xs={10}>
                     <SelectOptions selectItems={selectItems} category={category} handleChange={categoryChange} />
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item xs={2}>
                     {
                         !isLoading && error === '' ? (
                             <Typography variant='body2' component='h6' className={classes.pageNum}>Page: {data.page}</Typography>

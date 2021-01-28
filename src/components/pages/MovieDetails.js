@@ -20,11 +20,13 @@ const useStyles = makeStyles(theme => ({
         background: bg => (`linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7) 30%), url(${bg.url})`),
         backgroundSize: 'cover !important',
         backgroundPosition: 'center top !important',
-        width: '100%',
-        height: '100%',
+        backgroundAttachment: 'fixed',
+        // width: '100%',
+        // height: '100vh',
         backgroundAttachment: 'fixed !important',
+        margin: '0 -12px',
         [theme.breakpoints.up('sm')]: {
-            height: '100vh',
+           margin: '0 -20px',
         }
     },
     details: {
