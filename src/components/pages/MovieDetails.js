@@ -21,8 +21,8 @@ const useStyles = makeStyles(theme => ({
         backgroundSize: 'cover !important',
         backgroundPosition: 'center top !important',
         backgroundAttachment: 'fixed',
-        // width: '100%',
-        // height: '100vh',
+        width: '100vw',
+        height: '100vh',
         backgroundAttachment: 'fixed !important',
         margin: '0 -12px',
         [theme.breakpoints.up('sm')]: {
