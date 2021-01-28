@@ -21,10 +21,12 @@ const useStyles = makeStyles(theme => ({
         backgroundSize: 'cover !important',
         backgroundPosition: 'center top !important',
         backgroundAttachment: 'fixed',
-        width: '100vw',
+        position: 'fixed',
+        width: '100%',
         height: '100vh',
         backgroundAttachment: 'fixed !important',
         margin: '0 -12px',
+        zIndex: '-10',
         [theme.breakpoints.up('sm')]: {
            margin: '0 -20px',
         }
@@ -45,7 +47,7 @@ const useStyles = makeStyles(theme => ({
         maxHeight: '10rem',
         position: 'relative',
         right: 0,
-        marginTop: '5rem',
+        marginTop: '1rem',
         borderRadius: '5%',
         [theme.breakpoints.up('sm')]: {
             maxHeight: '15rem',
@@ -54,7 +56,7 @@ const useStyles = makeStyles(theme => ({
         }
     },
     ceiling: {
-        marginTop: '5rem',
+        marginTop: '3rem',
     },
     button: {
         marginTop: '1rem',
@@ -164,7 +166,8 @@ const MovieDetails = (props) => {
                     <Grid item className={classes.ceiling}>
                         <Alert severity="error">{state.error}</Alert>
                     </Grid> :
-                    <div div className={classes.root}>
+                    <div>
+                        <div className={classes.root} />
                         <Grid container className={classes.details} justify='center'>
 
                         {/* trailer popup modal */}
@@ -191,7 +194,6 @@ const MovieDetails = (props) => {
                                 onClick={handleOpen}
                                 >Watch Trailer</Button>
                             </Grid>
-
                         </Grid>
                     </div>
                 }
